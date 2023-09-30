@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Clients;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,3 +17,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::post('/client',[Clients::class,'index'])->name('identify');
+
+
+require __DIR__.'/auth.php';
