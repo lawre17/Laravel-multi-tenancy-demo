@@ -8,3 +8,5 @@ composer require stancl/tenancy - for tenacy package
 
 1. Since on shared hosting once cannot create databases programatically, I modified the code at the tenancyserviceprovider to allow user to select pre-populated databases
 2. using the register routes there is a dropdown to gets all databases from the db server and you have to only choose from there and provide a name for the tenant
+
+for more info see https://tenancyforlaravel.com/docs/v3/quickstart/?utm_campaign=ln2020t&utm_source=LN&utm_medium=article
