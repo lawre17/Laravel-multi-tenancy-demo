@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Tenant;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
@@ -12,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\DB;
 
 class RegisteredUserController extends Controller
 {
@@ -20,7 +22,9 @@ class RegisteredUserController extends Controller
      */
     public function create(): View
     {
-        return view('auth.register');
+        $databaseManager = DB::connection();
+        $databases = $databaseManager->select("show databases");
+        return view('auth.register',compact('databases')); 
     }
 
     /**
@@ -32,20 +36,21 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'tenant' => ['required', 'string', 'unique:'.Tenant::class.',id'],
         ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+        $tenant = Tenant::create(
+            ['id' => $request->tenant],
+        );
+        
+        $tenant->domains()->create(['domain'=>$request->name.'.localhost']);
 
-        event(new Registered($user));
+        if($tenant){
+            return back()->with('status','Tenant Addedd successfully');
+        }else{
+             $errors = ['name' => [$tenant->errors()->getMessages()]];
+            return back()->withErrors($errors);
+        }
 
-        Auth::login($user);
-
-        return redirect(RouteServiceProvider::HOME);
     }
 }
