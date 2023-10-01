@@ -43,6 +43,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect()->to(env('PROTOCAL').'localhost'.env('PORT'));
+        return redirect()->to(env('PROTOCAL').env('HOST').env('PORT'));
     }
 }
