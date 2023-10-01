@@ -43,7 +43,7 @@ class RegisteredUserController extends Controller
             ['id' => $request->tenant],
         );
         
-        $tenant->domains()->create(['domain'=>$request->name.'.localhost']);
+        $tenant->domains()->create(['domain'=>$request->name.'.'.env('HOST')]);
 
         if($tenant){
             return back()->with('status','Tenant Addedd successfully');
